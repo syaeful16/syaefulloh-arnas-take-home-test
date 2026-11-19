@@ -9,39 +9,46 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/bootstrap"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/database"
+
 	// "github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/database/seeders"
 	// catEntities "github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/modules/category/entities"
-	entEntities "github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/modules/entity/entities"
+
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/router"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/shared/config"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/shared/validator"
 )
 
 func main() {
+	// Load config from env
 	cfg := config.Load()
 
+	// Connect to database
 	db := database.NewPostgres(cfg.DB)
 	if sqlDB, err := db.DB(); err == nil {
 		defer sqlDB.Close()
 	}
 
-	if err := db.AutoMigrate(
-		// &catEntities.Category{},
-		&entEntities.Entity{},
-	); err != nil {
+	// Run database migrations
+	if err := database.Migrate(db); err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
 
+	// Create transaction manager
 	txManager := database.NewTransactionManager(db)
+
+	// Create validator
 	v := validator.NewValidator()
 
+	// Setup API
 	apiApp := bootstrap.SetupAPI(cfg, db, txManager, v)
 	// seeders.SeedEntities(db, apiApp.Modules.Category.Service)
 
+	// Setup Fiber app
 	app := fiber.New(fiber.Config{
 		AppName: cfg.App.Name,
 	})
 
+	// Setup middleware
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     strings.Join(cfg.CORS.AllowedOrigins, ","),
@@ -50,6 +57,7 @@ func main() {
 		AllowCredentials: cfg.CORS.AllowCredentials,
 	}))
 
+	// Setup router
 	router.Setup(app, apiApp)
 
 	port := cfg.App.Port
