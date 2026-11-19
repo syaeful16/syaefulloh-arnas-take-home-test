@@ -1,0 +1,8 @@
+name: Docker Local
+variables:
+  - name: BASE_URL
+    value: http://localhost:8080
+    description: ""
+  - name: BASE_URL_LOCAL
+    value: http://127.0.0.1:8080
+    description: ""

@@ -1,0 +1,69 @@
+info:
+  name: Create Entity
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{BASE_URL_LOCAL}}/api/entities"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Gedung Sate Titik Uji",
+        "category": "Landmark Baru",
+        "status": "Active",
+        "latitude": -6.902481,
+        "longitude": 107.61881
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 422 - Input not valid
+    request:
+      url: "{{BASE_URL}}/api/entities"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "Gedung Sate Titik Uji",
+            "category": "Landmark Baru",
+            "status": "Active",
+            "latitude": 120,
+            "longitude": 107.61881
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: date
+          value: Thu, 19 Nov 2026 15:26:58 GMT
+        - name: content-type
+          value: application/json
+        - name: content-length
+          value: "177"
+        - name: vary
+          value: Origin
+      body:
+        type: json
+        data: |-
+          {
+            "code": "VALIDATION_ERROR",
+            "errors": [
+              {
+                "field": "latitude",
+                "code": "INVALID_FORMAT",
+                "message": "latitude has invalid format"
+              }
+            ],
+            "message": "Data request tidak valid",
+            "status": "error"
+          }

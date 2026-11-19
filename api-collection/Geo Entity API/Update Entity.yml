@@ -1,0 +1,30 @@
+info:
+  name: Update Entity
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: "{{BASE_URL}}/api/entities/:id"
+  params:
+    - name: id
+      value: c2f530c1-61fd-4b9c-9ec4-6a26de76ee12
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "name": "halo halo bandung ibu kota periangan",
+        "category": "Hutan",
+        "status": "Maintenance",
+        "latitude": -6.897116,
+        "longitude": 107.603874
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

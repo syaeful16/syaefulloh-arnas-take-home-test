@@ -1,0 +1,43 @@
+info:
+  name: List Entities
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{BASE_URL_LOCAL}}/api/entities"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 - Empty records
+    request:
+      url: "{{BASE_URL}}/api/entities"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Thu, 19 Nov 2026 15:23:30 GMT
+        - name: content-type
+          value: application/json
+        - name: content-length
+          value: "99"
+        - name: vary
+          value: Origin
+      body:
+        type: json
+        data: |-
+          {
+            "code": "ENTITIES_FOUND",
+            "data": [],
+            "message": "Data entitas berhasil ditemukan.",
+            "status": "success"
+          }

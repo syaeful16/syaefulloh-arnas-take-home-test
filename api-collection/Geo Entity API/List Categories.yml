@@ -1,0 +1,46 @@
+info:
+  name: List Categories
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{BASE_URL_LOCAL}}/api/categories"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: 200 - Success Get Categories
+    request:
+      url: "{{BASE_URL_LOCAL}}/api/categories"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Thu, 19 Nov 2026 15:50:33 GMT
+        - name: content-type
+          value: application/json
+        - name: content-length
+          value: "170"
+      body:
+        type: json
+        data: |-
+          {
+            "code": "CATEGORIES_FOUND",
+            "data": [
+              {
+                "id": "be4ed4c3-ffb6-40d4-a7b8-1e8596f09856",
+                "name": "Landmark Baru"
+              }
+            ],
+            "message": "Data kategori berhasil ditemukan.",
+            "status": "success"
+          }
