@@ -1,4 +1,4 @@
-package category
+package entity
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -11,12 +11,14 @@ import (
 )
 
 type Module struct {
-	Service services.CategoryService
-	Handler handlers.CategoryHandler
+	CategoryService services.CategoryService
+	EntityService   services.EntityService
+	CategoryHandler handlers.CategoryHandler
+	EntityHandler   handlers.EntityHandler
 }
 
 type ModuleDeps struct {
-	DB *gorm.DB
+	DB        *gorm.DB
 	TxManager database.TransactionManager
 	Validator *validator.Validator
 }
@@ -24,21 +26,33 @@ type ModuleDeps struct {
 func NewModule(deps ModuleDeps) *Module {
 	// repositories
 	categoryRepo := repositories.NewCategoryRepository(deps.DB)
+	entityRepo := repositories.NewEntityRepository(deps.DB)
 
 	// services
 	categoryService := services.NewCategoryService(categoryRepo, deps.TxManager)
+	entityService := services.NewEntityService(entityRepo, categoryService, deps.TxManager)
 
 	// handlers
 	categoryHandler := handlers.NewCategoryHandler(categoryService, deps.Validator)
+	entityHandler := handlers.NewEntityHandler(entityService, deps.Validator)
 
 	return &Module{
-		Service: categoryService,
-		Handler: *categoryHandler,
+		CategoryService: categoryService,
+		EntityService:   entityService,
+		CategoryHandler: *categoryHandler,
+		EntityHandler:   *entityHandler,
 	}
 }
 
 func (m *Module) RegisterRoutes(router fiber.Router) {
 	categoriesGroup := router.Group("/categories")
+	categoriesGroup.Get("/", m.CategoryHandler.GetAllCategories)
 
-	categoriesGroup.Get("/", m.Handler.GetAllCategories)
+	entitiesGroup := router.Group("/entities")
+	entitiesGroup.Get("/", m.EntityHandler.GetAllEntities)
+	entitiesGroup.Get("/:id", m.EntityHandler.GetEntityByID)
+	entitiesGroup.Post("/", m.EntityHandler.CreateEntity)
+	entitiesGroup.Put("/:id", m.EntityHandler.UpdateEntity)
+	entitiesGroup.Delete("/:id", m.EntityHandler.DeleteEntity)
+
 }
