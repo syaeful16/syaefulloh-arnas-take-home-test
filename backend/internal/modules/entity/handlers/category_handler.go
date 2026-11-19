@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/modules/entity/dto"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/modules/entity/services"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/shared/response"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/shared/validator"
@@ -25,5 +26,13 @@ func (h *CategoryHandler) GetAllCategories(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "Gagal mengambil data kategori.")
 	}
 
-	return response.Success(c, fiber.StatusOK, "CATEGORIES_FOUND", "Data kategori berhasil ditemukan.", categories)
+	var categoriesResponse []dto.CategoryResponse
+	for _, category := range categories {
+		categoriesResponse = append(categoriesResponse, dto.CategoryResponse{
+			ID:   category.ID,
+			Name: category.Name,
+		})
+	}
+
+	return response.Success(c, fiber.StatusOK, "CATEGORIES_FOUND", "Data kategori berhasil ditemukan.", categoriesResponse)
 }
