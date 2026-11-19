@@ -2,7 +2,7 @@ package bootstrap
 
 import (
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/database"
-	category "github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/modules/entity"
+	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/modules/entity"
 	"github.com/syaeful16/syaefulloh-arnas-take-home-test/backend/internal/shared/validator"
 	"gorm.io/gorm"
 )
@@ -12,8 +12,7 @@ type HTTPModuleDeps struct {
 }
 
 type Modules struct {
-	Category *category.Module
-	// Entity   *entities.Module
+	Entity *entity.Module
 }
 
 type ModuleDeps struct {
@@ -28,21 +27,13 @@ func NewModules(deps ModuleDeps) *Modules {
 		v = deps.HTTP.Validator
 	}
 
-	categoryModule := category.NewModule(category.ModuleDeps{
+	entityModule := entity.NewModule(entity.ModuleDeps{
 		DB:        deps.DB,
 		TxManager: deps.TxManager,
 		Validator: v,
 	})
 
-	// entityModule := entity.NewModule(entity.ModuleDeps{
-	// 	DB:              deps.DB,
-	// 	TxManager:       deps.TxManager,
-	// 	Validator:       v,
-	// 	CategoryService: categoryModule.Service,
-	// })
-
 	return &Modules{
-		Category: categoryModule,
-		// Entity:   entityModule,
+		Entity: entityModule,
 	}
 }
