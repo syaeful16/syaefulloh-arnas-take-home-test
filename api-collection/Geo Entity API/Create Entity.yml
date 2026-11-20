@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{BASE_URL_LOCAL}}/api/entities"
+  url: "{{BASE_URL}}/api/entities"
   body:
     type: json
     data: |-

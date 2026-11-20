@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{BASE_URL_LOCAL}}/api/entities/:id"
+  url: "{{BASE_URL}}/api/entities/:id"
   params:
     - name: id
       value: c2f530c1-61fd-4b9c-9ec4-6a26de76ee12
